@@ -1,8 +1,14 @@
+#ifdef _WIN32
+#include <stddef.h>
+int getentropy(void *buffer, size_t length);
+#endif
+
 #include "nanoid.h"
 #include <stdio.h>
 
 int main(int argc, char *argv[]) {
   size_t length = 21;
+  char id[257];
 
   if (argc == 2) {
     length = strtoul(argv[1], NULL, 10);
@@ -18,14 +24,29 @@ int main(int argc, char *argv[]) {
     return 64;
   }
 
-  char *id = nanoid(length);
+  /* Compensate for nul terminator. */
+  length++;
 
-  if (!id) {
+  if (nanoid(id, length)) {
     perror(argv[0]);
     return EXIT_FAILURE;
   }
 
   puts(id);
-  free(id);
   return EXIT_SUCCESS;
 }
+
+#ifdef _WIN32
+#include <windows.h>
+#include <bcrypt.h>
+#include <errno.h>
+
+int getentropy(void *buffer, size_t length) {
+    NTSTATUS status = BCryptGenRandom(NULL, buffer, (ULONG)length, BCRYPT_USE_SYSTEM_PREFERRED_RNG);
+    if (!BCRYPT_SUCCESS(status)) {
+        errno = EIO;
+        return -1;
+    }
+    return 0;
+}
+#endif
