@@ -11,7 +11,7 @@ int nanoid(char *e, size_t t){
 	memset(e, 0, t);
 	if(!(r = getentropy(e,t))){
 		while(--t){
-			*e=(*e&=63)<10?*e+48:*e<36?*e+87:*e<46?*e+12:*e<62?*e+19:*e>62?45:95;
+			*e=(*e&=63)?*e<2?45:*e<12?*e+46:*e<38?*e+53:*e+59:95;
 			e++;
 		}
 	}
