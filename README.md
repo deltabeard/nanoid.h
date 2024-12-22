@@ -1,22 +1,28 @@
 # Nano ID for C
 
-<img src="logo.svg" align="right" alt="Logo" width="180" height="94">
+<img src="logo-small.svg" align="right" alt="Logo" width="180" height="94">
 
 Tiny, secure, URL-friendly unique string ID generator for C.
 
-- **Small.** 270 bytes. Header-only. Depends only on libc.
+- **Small** file size. Header-only. Depends only on libc.
 - **Safe.** Uses [`getentropy(3)`][], a modern, reliable, secure randomness source.
 - **Short IDs.** While UUIDs are 36 chars, similarly unique Nano IDs are just 21 due to the larger alphabet.
 - **Portable.** Nano ID has been ported to 20+ programming languages.
 
 ```c
 #include <nanoid.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int main() {
-  char *id = NANOID();
-
-  if (id)
-    puts(id);
+int main(void) {
+  size_t length = 21;
+  char id[22];
+  if (nanoid(id, length)) {
+    perror("nanoid");
+    return EXIT_FAILURE;
+  }
+  puts(id);
+  return EXIT_SUCCESS;
 }
 ```
 
@@ -29,26 +35,18 @@ V1StGXR8_Z5jdHi6B-myT
 ## Overview
 
 Works out of the box on Linux, Android, macOS, iOS, FreeBSD, NetBSD, OpenBSD,
-Illumos, Fuchsia, and WASI. Windows support requires a [`getentropy(3)`][] shim.
-
-For details, consult `nanoid(3)` and `nanoidgen(1)` man pages.
+Illumos, Fuchsia, and WASI. Windows support requires a [`getentropy(3)`][] shim
+which is provided in the example program `nanoidgen`.
 
 ## Documentation
 
-- function `char *nanoid(size_t length)`
+- function `int nanoid(char *e, size_t t)`
   
-  Generates a Nano ID of the given length ≤256.
+  Generates a Nano ID of the given length `t` ≤256 and stores it in `e`.
 
-  Returns a newly allocated null-terminated string with the ID, or `NULL` if
-  [`calloc(3)`][] or [`getentropy(3)`][] fail.
+  Returns 0 on success. On error, -1 is returned, and errno is set to indicate
+  the error.
 
-- macro `NANOID()`
-
-  Generates a Nano ID of the default length.
-
-  Expands to `nanoid(21)`.
-
-[`calloc(3)`]: https://man7.org/linux/man-pages/man3/calloc.3.html
 [`getentropy(3)`]: https://man7.org/linux/man-pages/man3/getentropy.3.html
 
 ## Attribution
