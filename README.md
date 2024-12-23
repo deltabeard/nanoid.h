@@ -13,11 +13,12 @@ Tiny, secure, URL-friendly unique string ID generator for C.
 #include <nanoid.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 int main(void) {
   size_t length = 21;
   char id[22];
-  if (nanoid(id, length)) {
+  if (nanoid(id, length, &getentropy)) {
     perror("nanoid");
     return EXIT_FAILURE;
   }

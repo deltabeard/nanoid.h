@@ -74,7 +74,7 @@ int mainCRTStartup(void)
 	HANDLE hc = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (hc == NULL || hc == INVALID_HANDLE_VALUE) return 1;
 
-	r = nanoid(e, 23, &getentropy);
+	r = nanoid(e, 22, &getentropy);
 	if(r != 0) return 1;
 
 	e[22] = '\n';
