@@ -41,9 +41,11 @@ which is provided in the example program `nanoidgen`.
 
 ## Documentation
 
-- function `int nanoid(char *e, size_t t)`
+- function `int nanoid(char *e, size_t t, nanoid_getentropy_fn f)`
   
   Generates a Nano ID of the given length `t` ≤256 and stores it in `e`.
+  Function pointer `f` points to a function with the same prototype as
+  [`getentropy(3)`][].
 
   Returns 0 on success. On error, -1 is returned, and errno is set to indicate
   the error.
