@@ -1,0 +1,15 @@
+CC=cl
+CFLAGS=/O2 /Gs0 /nologo
+LDFLAGS=/link kernel32.lib Advapi32.lib /subsystem:console 
+
+# Targets
+all: nanoidgen_win32.exe
+
+# Build the executable
+nanoidgen_win32.exe: nanoidgen_win32.obj
+	$(CC) $(CFLAGS) nanoidgen_win32.obj $(LDFLAGS)
+
+# Clean build artifacts
+clean:
+	del /f nanoidgen_win32.obj nanoidgen_win32.exe
+

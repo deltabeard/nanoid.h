@@ -1,10 +1,13 @@
-#ifdef _WIN32
-#include <stddef.h>
-int getentropy(void *buffer, size_t length);
-#endif
-
 #include "nanoid.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
+
+#ifdef _WIN32
+int getentropy(void *buffer, size_t length);
+#else
+#include <unistd.h>
+#endif
 
 int main(int argc, char *argv[]) {
   size_t length = 21;
@@ -27,7 +30,7 @@ int main(int argc, char *argv[]) {
   /* Compensate for nul terminator. */
   length++;
 
-  if (nanoid(id, length)) {
+  if (nanoid(id, length, &getentropy)) {
     perror(argv[0]);
     return EXIT_FAILURE;
   }
@@ -37,6 +40,7 @@ int main(int argc, char *argv[]) {
 }
 
 #ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <bcrypt.h>
 #include <errno.h>
